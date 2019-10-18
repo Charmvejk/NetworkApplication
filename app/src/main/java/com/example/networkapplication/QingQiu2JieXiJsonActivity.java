@@ -7,7 +7,13 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -53,10 +59,25 @@ public class QingQiu2JieXiJsonActivity extends AppCompatActivity implements View
 
     private void parseJSONWithJSONObject(String jsonData){
         try{
-            JSONObject jsonObject = new JSONObject(jsonData);//新建json对象实例
-            JSONObject jsonObject1 = jsonObject.getJSONObject("section");
-            String name = jsonObject1.getString("id");//取得其名字的值，一般是字符串
-            showResponse(name);//设置ui变化
+//            JSONObject jsonObject = new JSONObject(jsonData);//新建json对象实例
+//            JSONObject jsonObject1 = jsonObject.getJSONObject("section");
+//            String name = jsonObject1.getString("id");//取得其名字的值，一般是字符串
+//            showResponse(name);//设置ui变化
+
+          //TODO 简单方法
+
+            try{
+                JSONObject jsonObject = new JSONObject(jsonData);
+                JSONArray jsonObject1 = jsonObject.getJSONArray("results");
+                Gson gson = new Gson();
+                List<App> appList = gson.fromJson(jsonObject1.toString(),new TypeToken<List<App>>(){}.getType());
+                for(App app : appList){
+                    showResponse(app.get_id()+app.getTitle());
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }catch (Exception e){
             e.printStackTrace();
         }
